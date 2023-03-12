@@ -8,9 +8,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import NewsPaperService from "../services/newsPaperService";
+import NewsPaperService from "../../services/newsPaperService";
+const { v4: uuidv4 } = require("uuid");
 
 const columns = [
   { id: 'listName', label: 'List Name', minWidth: 170 },
@@ -77,8 +82,9 @@ const rows = [
 
 
 const StickyHeadTable = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState([]); // Fetched original data to use in memory.
+    const [filteredList, setFilteredList] = useState([]);
+    const [listNameFilter, setListNameFilter] = useState("");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
   
@@ -92,25 +98,78 @@ const StickyHeadTable = () => {
     };
    
     useEffect(() => {
+      if (isEmpty(data)) {
         const getBestSellers = async() => { 
-            setLoading(true);
-            const bestSellers = await NewsPaperService.getAllBestSellers();
-            console.log(bestSellers)
-            setData(bestSellers);
+          const bestSellers = await NewsPaperService.getAllBestSellers();
+          console.log(bestSellers)
+          setData(bestSellers);
+          setFilteredList(bestSellers.lists)
         }
-        getBestSellers();
-        setLoading(false);
-    }, []);
+      getBestSellers();
+      }
+        
+    }, [data]);
 
+    useEffect(() => {
+      if (!isEmpty(data.lists)) {
+        if (listNameFilter === "All") {
+          setFilteredList(data.lists);
+        }
+        else{
+          const newFilteredList = data.lists.filter((list) => {
+            return list.list_name === listNameFilter;
+          });
+          setFilteredList(newFilteredList);
+        }
+      }
+        
+    }, [listNameFilter]);
+
+    const handleDropdownChange = (event) => {
+      setListNameFilter(event.target.value);
+    };
+
+    const getDropdown = () => {
+      return(
+        <Box sx={{ width: 300 }}>
+          <FormControl >
+            <InputLabel id="demo-simple-select-label">List Name</InputLabel>
+            <Select
+              labelId="list-name-filter-id-label"
+              id="list-name-filter-id"
+              value={listNameFilter}
+              label="List Name"
+              onChange={handleDropdownChange}
+              className="mt-4 mb-4"
+            >
+              <MenuItem key="All" value="All">
+                <em>All</em>
+              </MenuItem>
+              {!isEmpty(data.lists) && data.lists.map((list) => {
+                return(
+                  <MenuItem
+                    value={list.list_name}
+                    key={`${list.list_name}_key`}
+                  >
+                    {list.list_name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Box>
+      )
+    }
 
     return (
-      <div>
+      <div className="m-4">
+        {getDropdown()}
         {isEmpty(data)? 
         <Box sx={{ display: 'flex' }}>
           <CircularProgress />
         </Box> :
-          <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
+        <Paper sx={{ width: '80%', overflow: 'hidden', margin: "auto" }}>
+          <TableContainer sx={{ maxHeight: 500 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -126,29 +185,30 @@ const StickyHeadTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.lists.map((list) => {
+                {console.log("asdasdasdadasdasdasdasd", filteredList)}
+                {!isEmpty(filteredList) && filteredList.map((list) => {
                     return list.books.map((book) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={book.title}>
                           <TableCell key={list.listName} align="right">
                             {list.list_name}
                           </TableCell>
-                          <TableCell key={book.title} align="right">
+                          <TableCell key={`${book.title}_${uuidv4()}`} align="right">
                             {book.title}
                           </TableCell>
-                          <TableCell key={book.author} align="right">
+                          <TableCell key={`${book.author}_${uuidv4()}`} align="right">
                             {book.author}
                           </TableCell>
-                          <TableCell key={book.description} align="right">
+                          <TableCell key={`${book.description}_${uuidv4()}`} align="right">
                             {book.description}
                           </TableCell>
-                          <TableCell key={book.publisher} align="right">
+                          <TableCell key={`${book.publisher}_${uuidv4()}`} align="right">
                             {book.publisher}
                           </TableCell>
-                          <TableCell key={book.rank} align="right">
+                          <TableCell key={`${book.rank}_${uuidv4()}`} align="right">
                             {book.rank}
                           </TableCell>
-                          <TableCell key={book.amazon_product_url} align="right">
+                          <TableCell key={`${book.amazon_product_url}_${uuidv4()}`} align="right">
                             <a href={`${book.amazon_product_url}`}>{book.amazon_product_url}</a>
                           </TableCell>
                         </TableRow>
