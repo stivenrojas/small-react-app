@@ -11,10 +11,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Configure dev env ##
 
-Add the following environment value to an .env file.
+Add the following environment value to an .env file with your API key from https://developer.nytimes.com/.
 
 ```bash
-REACT_APP_SG_NYT_API="oTUELa3Pr9VvpyOPb5W8NVJydATjewn3"
+REACT_APP_SG_NYT_API="<api-key-value>"
 ```
 
 ## Build and run ##
@@ -39,7 +39,7 @@ $ direnv allow
 If you want to check if the variable was loaded successfully, run:
 ```
 $ echo $REACT_APP_NYT_API
-You should see "oTUELa3Pr9VvpyOPb5W8NVJydATjewn3" printed in the console.
+You should see the value printed in the console.
 ```
 - Run the app in the development mode
 ```
