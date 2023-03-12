@@ -37,7 +37,8 @@ Alternatively, if you have direnv installed you can run:
 $ direnv allow
 ```
 If you want to check if the variable was loaded successfully, run:
-```
+
+
 $ echo $REACT_APP_NYT_API
 You should see the value printed in the console.
 ```
@@ -52,8 +53,10 @@ $ npm start
 To run unit tests, run the following command:
 ```
 $ npm test
-```
+
 You should see unit tests for the differente components in the app.
 ## Environment Variables
 
-**Note** Env vars meant to be included within the app start with `REACT_APP`.
+## Application demo ##
+![Screen Shot 2023-03-12 at 5 42 33 PM](https://user-images.githubusercontent.com/8335006/224581330-1686f8cf-18d2-4c6f-b5e5-b103d5dcaa32.png)
+
