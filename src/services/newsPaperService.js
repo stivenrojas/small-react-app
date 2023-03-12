@@ -1,8 +1,6 @@
 import axios from "axios";
-import { api } from "../utils/api";
-import settings from "../settings/settings";
-
-
+import { api } from "../utils/api.js";
+import settings from "../settings/settings.js";
 
 class NewsPaperService {
   /**
