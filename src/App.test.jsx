@@ -16,7 +16,9 @@ describe("App test", () => {
     render(<App />);
     setTimeout(
       () => {
-        expect(screen.getByText("List Name")).toBeInTheDocument();
+        expect(screen.getByText("Book Library")).toBeInTheDocument();
+        expect(screen.getByTestId("select-test-id")).toBeInTheDocument();
+        expect(screen.getByTestId("paper-test-id")).toBeInTheDocument();
       },
       50,
     );

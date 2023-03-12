@@ -18,12 +18,12 @@ const BookLibrary = () => {
     return filteredList.length;
   };
 
-  // Renders a label indicating the bestsellers_date.
-  const getBestSellersDate = () => {
+  // Renders a label indicating the bestsellers_date and total entries.
+  const getBestSellersInfo = () => {
     return(
       !isEmpty(filteredList) && ( 
       <div className="text-center mb-2">
-        <h3 className="text-center text-dark">
+        <h3 className="text-center text-dark" data-testid="date-subtitle-id">
           Best Sellers Date: {data.bestsellers_date}
         </h3>
         <h4 className="text-center text-dark">
@@ -33,6 +33,8 @@ const BookLibrary = () => {
     ));
   };
 
+  // Returns a flattened array of books from the original data.
+  // To be able to be used generically for the StickyHeaderTable component.
   const tranformData = (
     list
   ) => { 
@@ -48,10 +50,10 @@ const BookLibrary = () => {
     if (data === null) {
       const getBestSellers = async() => { 
         const bestSellers = await NewsPaperService.getAllBestSellers();
-        console.log("Fetching", bestSellers)
+        // console.log("Fetching", bestSellers)
         setData(bestSellers);
         
-        console.log("Flattened", tranformData(bestSellers.lists))
+        // console.log("Flattened", tranformData(bestSellers.lists))
         setFilteredList(tranformData(bestSellers.lists))
       }
       // Running twice due to the React.StrictMode. In production, it will run only once.
@@ -84,16 +86,25 @@ const BookLibrary = () => {
     setListNameFilter(event.target.value);
   };
 
+  // Returns only the list_name from the data to be used by the DropdownSelect.
+  const getListNameCategories = () => {
+    if (data && !isEmpty(data.lists)) {
+      return data.lists.map((list) => list.list_name);
+    }
+    return [];
+    ;
+  };
+
   return (
     <div className="flex">
       <h1 className="text-center text-dark mb-4">Book Library</h1>
-      {getBestSellersDate()}
+      {getBestSellersInfo()}
       <div className="m-4">
         <DropdownSelect
           fieldName="List Name"
           fieldValue={listNameFilter}
           handleDropdownChange={handleDropdownChange}
-          dropDownOptions={data && !isEmpty(data.lists) ? data.lists : []}
+          dropDownOptions={getListNameCategories()}
           defaultValue="All"
           className="mt-4 mb-4"
         />

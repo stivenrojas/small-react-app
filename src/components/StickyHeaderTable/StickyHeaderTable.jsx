@@ -35,15 +35,15 @@ const StickyHeaderTable = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!isEmpty(dataArray) && dataArray.map((row) => {
+                {!isEmpty(dataArray) && dataArray.map((row, rowIndex) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={`tablerow_key_${uuidv4()}`}>
                           
                           {columns.map((col, index)=> {
-                            const keyId = `table_cell_key_${uuidv4}`;
+                            const keyId = `table_cell_key_${rowIndex}_${index}_${uuidv4}`;
                             const cellValue = row[col.id];
                             return (
-                              <TableCell key={keyId} align="right">
+                              <TableCell key={keyId} align="right" data-testid={`cell-test-id-${rowIndex}-${index}`}>
                                 {cellValue}
                               </TableCell>
                             )

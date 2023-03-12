@@ -6,8 +6,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 
-
-
 const DropdownSelect = (props) => {
     const {
         fieldName,
@@ -42,16 +40,16 @@ const DropdownSelect = (props) => {
               data-testid="select-test-id"
               style={{ backgroundColor: "white", color: "black" }}
             >
-              <MenuItem key="All" value="All">
+              <MenuItem key={`default_option_${defaultValue}`} value={defaultValue}>
                 {defaultValue}
               </MenuItem>
-              {!isEmpty(dropDownOptions) && dropDownOptions.map((list) => {
+              {!isEmpty(dropDownOptions) && dropDownOptions.map((option) => {
                 return(
                   <MenuItem
-                    value={list.list_name}
-                    key={`${list.list_name}_key`}
+                    value={option}
+                    key={`${option}_key`}
                   >
-                    {list.list_name}
+                    {option}
                   </MenuItem>
                 );
               })}

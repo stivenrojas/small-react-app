@@ -1,14 +1,12 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import StickyHeaderTable from "./StickyHeaderTable.jsx";
+import DropdownSelect from "./DropdownSelect.jsx";
 import { BEST_SELLERS_COLUMNS } from "../../constants/BookLibraryConstants";
 
 jest.mock("../../services/newsPaperService");
 
-describe("StickyHeadTable tests", () => {
-
-  it("Renders with correct data", async () => {
+describe("DropdownSelect tests", () => {
     const filteredList = [
         {
             listName: "Combined Print and E-Book Fiction",
@@ -28,23 +26,30 @@ describe("StickyHeadTable tests", () => {
             publisher: "Putnam",
             amazon_product_url: "https://www.amazon.com/dp/0593331303?tag=NYTBSREV-20",
         }
-    ];
-    const table = (
-        <StickyHeaderTable
-            columns={BEST_SELLERS_COLUMNS}
-            dataArray={filteredList}
-            className="mt-4"
-      />
-    );
-    render(table);
-    const tableCellListName1 = screen.getByTestId("cell-test-id-0-0");
-    const tableCelltitle1 = screen.getByTestId("cell-test-id-0-1");
-    const tableCellListName2 = screen.getByTestId("cell-test-id-1-0");
-    const tableCelltitle2 = screen.getByTestId("cell-test-id-1-1");
+  ];
 
-    expect(tableCellListName1.innerHTML).toBe("Combined Print and E-Book Fiction");
-    expect(tableCelltitle1.innerHTML).toBe("THE ADVENTURES OF AMINA AL-SIRAFI");
-    expect(tableCellListName2.innerHTML).toBe("Hardcover Fiction");
-    expect(tableCelltitle2.innerHTML).toBe("STORM WATCH");
+  it("Renders with option 'Combined Print and E-Book Fiction' selected", async () => {
+    const listNameFilter = "Combined Print and E-Book Fiction";
+    const options = [
+        "Combined Print and E-Book Fiction",
+        "Hardcover Fiction",
+        "Hardcover Nonfiction",
+        "Trade Fiction Paperback",
+        "Mass Market Paperback",
+        "Paperback Nonfiction",
+    ];
+    const dropdownComponent = (
+        <DropdownSelect
+          fieldName="List Name"
+          fieldValue={listNameFilter}
+          handleDropdownChange={()=>{}}
+          dropDownOptions={options}
+          defaultValue="All"
+          className="mt-4 mb-4"
+        />
+    );
+    render(dropdownComponent);
+    expect(screen.getByText("Combined Print and E-Book Fiction")).toBeInTheDocument("Combined Print and E-Book Fiction");
+    
   });
 });
