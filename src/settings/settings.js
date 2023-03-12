@@ -1,10 +1,9 @@
 const {
-  REACT_APP_SG_NYT_API,
+  REACT_APP_NYT_API,
 } = process.env;
 
 const settings = {
-  newYorkYTimesApiUrl: REACT_APP_SG_NYT_API,
-  apiUrl: 'http://localhost:3000',
+  newYorkYTimesApiUrl: REACT_APP_NYT_API,
 };
 
 export default settings;

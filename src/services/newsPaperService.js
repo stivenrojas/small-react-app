@@ -1,20 +1,12 @@
-import axios from "axios";
 import { api } from "../utils/api.js";
 import settings from "../settings/settings.js";
 
 class NewsPaperService {
   /**
    *
-   * @param {string} standardKey
-   * @param {string} organizationExtId
-   * @returns {Promise<{signedDownloadUrl: string}>}
+   * @returns {Array} - Array of all books of all best sellers from NYT and some other metadata.
    */
   static async getAllBestSellers() {
-    const api = axios.create({
-        baseURL: `https://api.nytimes.com/svc/books/v3/lists/best-sellers/history.json`,
-        crossDomain: true,
-    });
-
     const url = `https://api.nytimes.com/svc/books/v3/lists/full-overview.json?api-key=${settings.newYorkYTimesApiUrl}`;
     const response = await api.get(url);
     return response.data.results;

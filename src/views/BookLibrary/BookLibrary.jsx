@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { isEmpty } from "lodash";
 import StickyHeaderTable from '../../components/StickyHeaderTable/StickyHeaderTable';
 import DropdownSelect from '../../components/DropdownSelect/DropdownSelect';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import NewsPaperService from "../../services/newsPaperService";
 import { BEST_SELLERS_COLUMNS } from "../../constants/BookLibraryConstants";
-
+import "./BookLibrary.scss"
 
 const BookLibrary = () => {
   // This view can serve as the main view for a Book Library page.
@@ -47,7 +49,7 @@ const BookLibrary = () => {
   };
   
   useEffect(() => {
-    if (data === null) {
+    if (isEmpty(data)) {
       const getBestSellers = async() => { 
         const bestSellers = await NewsPaperService.getAllBestSellers();
         // console.log("Fetching", bestSellers)
@@ -95,26 +97,46 @@ const BookLibrary = () => {
     ;
   };
 
+  const displayLoading = () => { 
+    return(
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: "center",
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+       }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+   }
+
   return (
-    <div className="flex">
+    <div className="flex text-center book-library-container">
       <h1 className="text-center text-dark mb-4">Book Library</h1>
-      {getBestSellersInfo()}
-      <div className="m-4">
-        <DropdownSelect
-          fieldName="List Name"
-          fieldValue={listNameFilter}
-          handleDropdownChange={handleDropdownChange}
-          dropDownOptions={getListNameCategories()}
-          defaultValue="All"
-          className="mt-4 mb-4"
-        />
-        
-        <StickyHeaderTable
-          columns={BEST_SELLERS_COLUMNS}
-          dataArray={filteredList}
-          className="mt-4"
-        />
+      {(!data || isEmpty(data)) ? displayLoading()
+        :<div>
+          {getBestSellersInfo()}
+          <div className="m-4">
+            <DropdownSelect
+              fieldName="List Name"
+              fieldValue={listNameFilter}
+              handleDropdownChange={handleDropdownChange}
+              dropDownOptions={getListNameCategories()}
+              defaultValue="All"
+              className="mb-2"
+            />
+            
+            <StickyHeaderTable
+              columns={BEST_SELLERS_COLUMNS}
+              dataArray={filteredList}
+              className="mt-4"
+            />
+        </div>
       </div>
+      }
     </div>
   );
 };

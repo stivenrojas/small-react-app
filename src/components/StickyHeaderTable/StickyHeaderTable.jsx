@@ -27,7 +27,7 @@ const StickyHeaderTable = (props) => {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ minWidth: column.minWidth }}
+                      style={{ minWidth: column.minWidth, textAlign: 'left' }}
                     >
                       {column.label}
                     </TableCell>
@@ -43,7 +43,7 @@ const StickyHeaderTable = (props) => {
                             const keyId = `table_cell_key_${rowIndex}_${index}_${uuidv4}`;
                             const cellValue = row[col.id];
                             return (
-                              <TableCell key={keyId} align="right" data-testid={`cell-test-id-${rowIndex}-${index}`}>
+                              <TableCell key={keyId} align="left" data-testid={`cell-test-id-${rowIndex}-${index}`}>
                                 {cellValue}
                               </TableCell>
                             )
