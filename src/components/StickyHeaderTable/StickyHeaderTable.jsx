@@ -6,13 +6,11 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import NewsPaperService from "../../services/newsPaperService";
 const { v4: uuidv4 } = require("uuid");
@@ -25,83 +23,42 @@ const columns = [
     label: 'Author(s)',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'description',
     label: 'Description',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'publisher',
     label: 'Publisher',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toFixed(2),
   },
   {
     id: 'currentRank',
     label: 'Current Rank',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toFixed(2),
   },
   {
     id: 'purchaseLinks',
     label: 'Purchase Links',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toFixed(2),
   },
 ];
-
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
-
 
 const StickyHeadTable = () => {
     const [data, setData] = useState([]); // Fetched original data to use in memory.
     const [filteredList, setFilteredList] = useState([]);
-    const [listNameFilter, setListNameFilter] = useState("");
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-  
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+    const [listNameFilter, setListNameFilter] = useState("");    
    
     useEffect(() => {
       if (isEmpty(data)) {
         const getBestSellers = async() => { 
           const bestSellers = await NewsPaperService.getAllBestSellers();
-          console.log(bestSellers)
           setData(bestSellers);
           setFilteredList(bestSellers.lists)
         }
@@ -113,6 +70,7 @@ const StickyHeadTable = () => {
     useEffect(() => {
       if (!isEmpty(data.lists)) {
         if (listNameFilter === "All") {
+          console.log("All",data.lists.length)
           setFilteredList(data.lists);
         }
         else{
@@ -123,12 +81,37 @@ const StickyHeadTable = () => {
         }
       }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listNameFilter]);
 
     const handleDropdownChange = (event) => {
       setListNameFilter(event.target.value);
     };
 
+    // Returns the total count of books in the filtered list.
+    const getTotalCount = () => {
+      const total = filteredList.reduce((acc, list) => {
+        return acc + list.books.length;
+      }, 0);
+      return total;
+    }
+
+    // Renders a label indicating the bestsellers_date.
+    const getBestSellersDate = () => {
+      return(
+        !isEmpty(filteredList) && ( 
+        <div className="text-center mb-2">
+          <h3 className="text-center text-dark">
+            Best Sellers Date: {data.bestsellers_date}
+          </h3>
+          <h4 className="text-center text-dark">
+            Results: {getTotalCount()}
+          </h4>
+        </div>
+      ));
+    }
+
+    // Renders dropdown field to filter by list name.
     const getDropdown = () => {
       return(
         <Box sx={{ width: 300 }}>
@@ -141,9 +124,13 @@ const StickyHeadTable = () => {
               label="List Name"
               onChange={handleDropdownChange}
               className="mt-4 mb-4"
+              sx={{
+                width: 150,
+                height: 50,
+              }}
             >
               <MenuItem key="All" value="All">
-                <em>All</em>
+                All
               </MenuItem>
               {!isEmpty(data.lists) && data.lists.map((list) => {
                 return(
@@ -163,12 +150,12 @@ const StickyHeadTable = () => {
 
     return (
       <div className="m-4">
-        {getDropdown()}
-        {isEmpty(data)? 
-        <Box sx={{ display: 'flex' }}>
-          <CircularProgress />
-        </Box> :
-        <Paper sx={{ width: '80%', overflow: 'hidden', margin: "auto" }}>
+        <div className="row">
+          {getDropdown()}
+          {getBestSellersDate()}
+        </div>
+        
+        {<Paper sx={{ width: '100%', overflow: 'hidden', margin: "auto" }}>
           <TableContainer sx={{ maxHeight: 500 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -185,7 +172,6 @@ const StickyHeadTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {console.log("asdasdasdadasdasdasdasd", filteredList)}
                 {!isEmpty(filteredList) && filteredList.map((list) => {
                     return list.books.map((book) => {
                       return (
