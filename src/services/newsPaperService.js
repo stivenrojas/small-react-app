@@ -3,7 +3,6 @@ import settings from "../settings/settings.js";
 
 class NewsPaperService {
   /**
-   *
    * @returns {Array} - Array of all books of all best sellers from NYT and some other metadata.
    */
   static async getAllBestSellers() {

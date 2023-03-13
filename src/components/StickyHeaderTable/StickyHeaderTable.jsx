@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -58,6 +59,16 @@ const StickyHeaderTable = (props) => {
         </Paper>
        </div> 
     );
+};
+
+StickyHeaderTable.defaultProps = {
+  className: "",
+};
+
+StickyHeaderTable.propTypes = {
+  dataArray: PropTypes.array.isRequired,
+  columns: PropTypes.array.isRequired,
+  className: PropTypes.string,
 };
 
 export default StickyHeaderTable;
