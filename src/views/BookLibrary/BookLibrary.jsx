@@ -49,6 +49,12 @@ const BookLibrary = () => {
   };
   
   useEffect(() => {
+    return () => { // Unmount cleanup.
+      // Here goes some cleanup.
+    }
+  }, []);
+
+  useEffect(() => {
     if (isEmpty(data)) {
       const getBestSellers = async() => { 
         const bestSellers = await NewsPaperService.getAllBestSellers();
@@ -60,10 +66,6 @@ const BookLibrary = () => {
       }
       // Running twice due to the React.StrictMode. In production, it will run only once.
       getBestSellers(); 
-    }
-
-    return () => { // Unmount cleanup.
-      // Here goes some cleanup.
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
