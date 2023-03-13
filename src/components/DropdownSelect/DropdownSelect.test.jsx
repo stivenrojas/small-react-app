@@ -27,7 +27,7 @@ describe("DropdownSelect tests", () => {
         />
     );
     render(dropdownComponent);
-    expect(screen.getByText("Combined Print and E-Book Fiction")).toBeInTheDocument("Combined Print and E-Book Fiction");
+    expect(screen.getByText("Combined Print and E-Book Fiction")).toBeInTheDocument();
     
   });
 });

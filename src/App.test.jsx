@@ -5,7 +5,6 @@ import {
 } from "@testing-library/react";
 import App from "./App";
 
-
 describe("App test", () => {
   beforeEach(() => {
     // Mock necessary libraries and functions.

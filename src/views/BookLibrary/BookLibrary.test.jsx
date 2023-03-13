@@ -60,7 +60,6 @@ describe("BookLibrary tests", () => {
         const bookLibrary = (<BookLibrary/>);
         render(bookLibrary);
         
-        
         // Side effects happening inside BookLibrary component, so we have to wait for it to finish.
         await waitFor(() => {
             const bestsellerDate = screen.getByTestId("date-subtitle-id");

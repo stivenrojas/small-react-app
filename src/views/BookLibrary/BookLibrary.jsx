@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { isEmpty } from "lodash";
-import StickyHeaderTable from '../../components/StickyHeaderTable/StickyHeaderTable';
-import DropdownSelect from '../../components/DropdownSelect/DropdownSelect';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import StickyHeaderTable from "../../components/StickyHeaderTable/StickyHeaderTable";
+import DropdownSelect from "../../components/DropdownSelect/DropdownSelect";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import NewsPaperService from "../../services/newsPaperService";
 import { BEST_SELLERS_COLUMNS } from "../../constants/BookLibraryConstants";
 import "./BookLibrary.scss"
@@ -104,7 +104,7 @@ const BookLibrary = () => {
     return(
       <Box
         sx={{
-          display: 'flex',
+          display: "flex",
           justifyContent: "center",
           position: "absolute",
           left: "50%",
@@ -131,14 +131,13 @@ const BookLibrary = () => {
               defaultValue="All"
               className="mb-2"
             />
-            
             <StickyHeaderTable
               columns={BEST_SELLERS_COLUMNS}
               dataArray={filteredList}
               className="mt-4"
             />
+          </div>
         </div>
-      </div>
       }
     </div>
   );
