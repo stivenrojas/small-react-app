@@ -48,6 +48,7 @@ const BookLibrary = () => {
     return flattenedArray;
   };
   
+  // Template useffect to handle necessary mounting and unmounting/cleanup steps.
   useEffect(() => {
     return () => { // Unmount cleanup.
       // Here goes some cleanup.
