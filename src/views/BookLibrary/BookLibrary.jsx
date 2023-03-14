@@ -12,7 +12,7 @@ const BookLibrary = () => {
   const [listNames, setListNames] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [listNameFilter, setListNameFilter] = useState("All");
-  const [bestSellerDate, setBestSellerDate] = useState("All");
+  const [bestSellerDate, setBestSellerDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Returns the total count of books in the filtered list.
