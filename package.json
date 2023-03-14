@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --detectOpenHandles --forceExit --transformIgnorePatterns \"node_modules/(?!axios)/\"",
+    "test": "react-scripts test  --runInBand --detectOpenHandles --transformIgnorePatterns \"node_modules/(?!axios)/\"",
     "eject": "react-scripts eject",
     "lint-changes": "./scripts/lint-changes.sh",
     "lint": "eslint ./src --ext js,jsx --fix"
