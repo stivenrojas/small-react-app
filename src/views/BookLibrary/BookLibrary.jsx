@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { isEmpty } from "lodash";
 import StickyHeaderTable from "../../components/StickyHeaderTable/StickyHeaderTable";
 import DropdownSelect from "../../components/DropdownSelect/DropdownSelect";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import NewsPaperService from "../../services/newsPaperService";
 import { BEST_SELLERS_COLUMNS } from "../../constants/BookLibraryConstants";
 import "./BookLibrary.scss"
@@ -11,9 +9,11 @@ import "./BookLibrary.scss"
 const BookLibrary = () => {
   // This view can serve as the main view for a Book Library page.
 
-  const [data, setData] = useState(null); // Fetched original data to use in memory.
+  const [listNames, setListNames] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
-  const [listNameFilter, setListNameFilter] = useState("");
+  const [listNameFilter, setListNameFilter] = useState("All");
+  const [bestSellerDate, setBestSellerDate] = useState("All");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Returns the total count of books in the filtered list.
   const getTotalCount = () => {
@@ -22,22 +22,21 @@ const BookLibrary = () => {
 
   // Renders a label indicating the bestsellers_date and total entries.
   const getBestSellersInfo = () => {
-    return(
-      !isEmpty(filteredList) && ( 
+    return( 
       <div className="text-center mb-2">
         <h3 className="text-center text-dark" data-testid="date-subtitle-id">
-          Best Sellers Date: {data.bestsellers_date}
+          Best Sellers Date: {bestSellerDate}
         </h3>
         <h4 className="text-center text-dark">
           Results: {getTotalCount()}
         </h4>
       </div>
-    ));
+    );
   };
 
-  // Returns a flattened array of books from the original data.
+  // Returns a flattened array of books from all data results without list name filter.
   // To be able to be used generically for the StickyHeaderTable component.
-  const tranformData = (
+  const transformData = (
     list
   ) => { 
     const flattenedArray = list.reduce((acc, element) => {
@@ -48,97 +47,82 @@ const BookLibrary = () => {
     return flattenedArray;
   };
   
-  // Template useffect to handle necessary mounting and unmounting/cleanup steps.
+  // To handle necessary after mounting and on unmounting/cleanup steps.
   useEffect(() => {
+    const getAllListNames = async() => {
+      const response = await NewsPaperService.getAllBestSellersListNames();
+      if (!isEmpty(response)) {
+        const listNames = response.map(
+          (listName) => {
+            return { value: listName.list_name_encoded, displayLabel: listName.display_name }
+          }
+        );
+        setListNames(listNames);
+      }
+    }
+    getAllListNames(); 
+
     return () => { // Unmount cleanup.
       // Here goes some cleanup.
     }
   }, []);
 
   useEffect(() => {
-    if (isEmpty(data)) {
-      const getBestSellers = async() => { 
-        const bestSellers = await NewsPaperService.getAllBestSellers();
-        // console.log("Fetching", bestSellers)
-        setData(bestSellers);
-        
-        // console.log("Flattened", tranformData(bestSellers.lists))
-        setFilteredList(tranformData(bestSellers.lists))
-      }
-      // Running twice due to the React.StrictMode. In production, it will run only once.
-      getBestSellers(); 
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  useEffect(() => {
-    if (data && !isEmpty(data.lists)) {
+    if (listNameFilter) {
       if (listNameFilter === "All") {
-        setFilteredList(tranformData(data.lists));
+        const getAllBestSellers = async() => {
+          setIsLoading(true);
+          const allBestSellers = await NewsPaperService.getAllBestSellersBooks();
+          setFilteredList(transformData(allBestSellers.lists))
+          setBestSellerDate(allBestSellers.bestsellers_date)
+          setIsLoading(false);
+        }
+        getAllBestSellers(); 
       }
       else{
-        const newFilteredList = data.lists.filter((list) => {
-          return list.list_name === listNameFilter;
-        });
-        setFilteredList(tranformData(newFilteredList));
+        const getBooksByListName = async() => {
+          setIsLoading(true);
+          const booksByListName = await NewsPaperService.getBestSellersBooksByListName(listNameFilter);
+          const flattenedList = booksByListName.books.map((book) =>
+            { return { ...book, listName: booksByListName.list_name } }
+          );
+          setFilteredList(flattenedList);
+          setBestSellerDate(booksByListName.bestsellers_date)
+          setIsLoading(false);
+        }
+        getBooksByListName();
       }
     }
       
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listNameFilter]);
 
-  const handleDropdownChange = (event) => {
+  const handleDropdownChange = (event, child) => {  
     setListNameFilter(event.target.value);
   };
-
-  // Returns only the list_name from the data to be used by the DropdownSelect.
-  const getListNameCategories = () => {
-    if (data && !isEmpty(data.lists)) {
-      return data.lists.map((list) => list.list_name);
-    }
-    return [];
-    ;
-  };
-
-  const displayLoading = () => { 
-    return(
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-       }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-   }
 
   return (
     <div className="flex text-center book-library-container">
       <h1 className="text-center text-dark mb-4">Book Library</h1>
-      {(!data || isEmpty(data)) ? displayLoading()
-        :<div>
-          {getBestSellersInfo()}
-          <div className="m-4">
-            <DropdownSelect
-              fieldName="List Name"
-              fieldValue={listNameFilter}
-              handleDropdownChange={handleDropdownChange}
-              dropDownOptions={getListNameCategories()}
-              defaultValue="All"
-              className="mb-2"
-            />
-            <StickyHeaderTable
-              columns={BEST_SELLERS_COLUMNS}
-              dataArray={filteredList}
-              className="mt-4"
-            />
-          </div>
+      <div>
+        {getBestSellersInfo()}
+        <div className="m-4">
+          <DropdownSelect
+            fieldName="List Name"
+            fieldValue={listNameFilter}
+            handleDropdownChange={handleDropdownChange}
+            dropDownOptions={listNames}
+            defaultValue="All"
+            className="mb-2"
+          />
+          <StickyHeaderTable
+            columns={BEST_SELLERS_COLUMNS}
+            dataArray={filteredList}
+            className="mt-4"
+            loading={isLoading}
+          />
         </div>
-      }
+      </div>
     </div>
   );
 };

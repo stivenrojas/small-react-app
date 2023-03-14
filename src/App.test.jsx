@@ -11,8 +11,9 @@ describe("App test", () => {
     
   });
 
-  it("renders App", () => {
+  it("renders App", async() => {
     render(<App />);
+    
     setTimeout(
       () => {
         expect(screen.getByText("Book Library")).toBeInTheDocument();

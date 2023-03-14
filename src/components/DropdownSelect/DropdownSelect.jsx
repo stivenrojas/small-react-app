@@ -34,17 +34,17 @@ const DropdownSelect = (props) => {
                 data-testid="select-test-id"
                 style={{ backgroundColor: "white", color: "black" }}
                 variant="standard"
-              >
+              > 
                 <MenuItem key={`default_option_${defaultValue}`} value={defaultValue}>
                   {defaultValue}
                 </MenuItem>
                 {!isEmpty(dropDownOptions) && dropDownOptions.map((option) => {
                   return(
                     <MenuItem
-                      value={option}
-                      key={`${option}_key`}
+                      value={option.value}
+                      key={`${option.value}_key`}
                     >
-                      {option}
+                      {option.displayLabel}
                     </MenuItem>
                   );
                 })}

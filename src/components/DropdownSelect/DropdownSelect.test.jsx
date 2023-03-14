@@ -1,20 +1,31 @@
 import "@testing-library/jest-dom";
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import DropdownSelect from "./DropdownSelect.jsx";
+import newsPaperService from "../../services/newsPaperService";
 
 jest.mock("../../services/newsPaperService");
 
 describe("DropdownSelect tests", () => {
-  it("Renders with option 'Combined Print and E-Book Fiction' selected", async () => {
-    const listNameFilter = "Combined Print and E-Book Fiction";
+  it.only("Renders with option 'hardcover-fiction' selected", async () => {
+    const listNameFilter = "hardcover-fiction";
     const options = [
-        "Combined Print and E-Book Fiction",
-        "Hardcover Fiction",
-        "Hardcover Nonfiction",
-        "Trade Fiction Paperback",
-        "Mass Market Paperback",
-        "Paperback Nonfiction",
+        {
+          displayLabel: "Combined Print and E-Book Fiction",
+          value: "combined-print-and-e-book-fiction"
+        },
+        {
+          displayLabel: "Hardcover Fiction",
+          value: "hardcover-fiction"
+        },
+        {
+          displayLabel: "Hardcover Nonfiction",
+          value: "hardcover-nonfiction"
+        },
+        {
+          displayLabel: "Combined Print and E-Book Fiction",
+          value: "combined-print-and-e-book-fiction"
+        },
     ];
     const dropdownComponent = (
         <DropdownSelect
@@ -24,10 +35,12 @@ describe("DropdownSelect tests", () => {
           dropDownOptions={options}
           defaultValue="All"
           className="mt-4 mb-4"
+          loading={false}
         />
     );
     render(dropdownComponent);
-    expect(screen.getByText("Combined Print and E-Book Fiction")).toBeInTheDocument();
+    expect(screen.getByText("Hardcover Fiction")).toBeInTheDocument();
+    
     
   });
 });
