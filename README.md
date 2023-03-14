@@ -59,5 +59,6 @@ You should see unit tests for the differente components in the app.
 
 
 ## Application demo ##
-![Screen Shot 2023-03-12 at 5 42 33 PM](https://user-images.githubusercontent.com/8335006/224581330-1686f8cf-18d2-4c6f-b5e5-b103d5dcaa32.png)
+![Screen Shot 2023-03-13 at 8 41 20 PM](https://user-images.githubusercontent.com/8335006/224879100-4b417889-c134-4a0b-96f1-d34db081c373.png)
+
 
